@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/VJPranay/sps.svg?branch=master)](https://travis-ci.org/VJPranay/sps)
 [![Built with](https://img.shields.io/badge/Built_with-Cookiecutter_Django_Rest-F7B633.svg)](https://github.com/agconti/cookiecutter-django-rest)
 
-Basic social network with geo features. Check out the project's [documentation](http://VJPranay.github.io/sps/).
+Basic social network with geo features. Check out the project's [documentation](https://github.com/VJPranay/sps/tree/master/docs/api).
 
 # Prerequisites
 
