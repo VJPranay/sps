@@ -7,6 +7,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken import views
 from .users.views import UserViewSet, UserCreateViewSet, UserSearch,\
     send_friend_request, remove_friend,friend_requests,friends,accept_friend
+from .newsfeed.views import post_activity,posts,near_by_posts
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
@@ -21,6 +22,9 @@ urlpatterns = [
     path('api/v1/accept_friend/', accept_friend, name='accept_friend'),
     path('api/v1/friends/', friends, name='friends'),
     path('api/v1/remove_friend/', remove_friend, name='remove_friend'),
+    path('api/v1/post_activity/', post_activity, name='post_activity'),
+    path('api/v1/posts/', posts, name='posts'),
+    path('api/v1/near_by_posts/', near_by_posts, name='near_by_posts'),
     path('api-token-auth/', views.obtain_auth_token),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 

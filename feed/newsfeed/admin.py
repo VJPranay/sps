@@ -7,7 +7,7 @@ from feed.users.models import User
 
 @admin.register(User)
 class UserAdmin(OSMGeoAdmin):
-    list_display = ('id','location', 'username')
+    list_display = ('id','location', 'username','profile_picture')
 
 
 @admin.register(Activity)

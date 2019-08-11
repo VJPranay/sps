@@ -20,7 +20,8 @@ class Common(Configuration):
 
         # Third party apps
         'rest_framework',            # utilities for rest apis
-        'rest_framework.authtoken',  # token authentication
+        'rest_framework.authtoken',        # token authentication
+        'rest_framework_gis',
         'django_filters',
         # for filtering rest endpoints
 

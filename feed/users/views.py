@@ -11,6 +11,7 @@ from friendship.exceptions import AlreadyExistsError
 from django.contrib.gis.geos import GEOSGeometry
 
 
+
 class UserViewSet(mixins.RetrieveModelMixin,
                   mixins.UpdateModelMixin,
                   viewsets.GenericViewSet):
@@ -39,6 +40,14 @@ class UserSearch(generics.ListAPIView):
     filter_backends = [filters.SearchFilter]
     search_fields = ['username', 'email']
 
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = UserSerializer(queryset, many=True)
+        response_list = serializer.data
+        for x in response_list:
+            x['is_friend'] = Friend.objects.are_friends(request.user, User.objects.get(id=x['id']))
+        return Response(response_list)
+
 
 @api_view(['POST'])
 def send_friend_request(request):
@@ -60,12 +69,28 @@ def friend_requests(request):
     temp = []
     friend_requests = FriendshipRequest.objects.filter(to_user=request.user.id)
     for friend_request in friend_requests:
-        temp_data = {
-            'from_user' : friend_request.from_user.username,
-            'from_user_id' : friend_request.from_user_id,
-            'message' : friend_request.message,
-        }
-        temp.append(temp_data)
+        if not friend_request.from_user.profile_picture:
+            temp_data = {
+                'profile_pic' : None,
+                'from_user' : friend_request.from_user.username,
+                'from_user_firstname' : friend_request.from_user.first_name,
+                'from_user_lastname' : friend_request.from_user.last_name,
+                'from_user' : friend_request.from_user.first_name,
+                'from_user_id' : friend_request.from_user_id,
+                'message' : friend_request.message,
+            }
+            temp.append(temp_data)
+        else:
+            temp_data = {
+                'profile_pic': friend_request.from_user.profile_picture.url,
+                'from_user': friend_request.from_user.username,
+                'from_user_firstname': friend_request.from_user.first_name,
+                'from_user_lastname': friend_request.from_user.last_name,
+                'from_user': friend_request.from_user.first_name,
+                'from_user_id': friend_request.from_user_id,
+                'message': friend_request.message,
+            }
+            temp.append(temp_data)
     data = {
         'friend_requests' : temp
     }
@@ -74,12 +99,20 @@ def friend_requests(request):
 
 @api_view(['POST'])
 def accept_friend(request):
-    friend_requests = FriendshipRequest.objects.filter(to_user=request.POST['id'])
+    friend_requests = FriendshipRequest.objects.filter(to_user=request.user.id)
+    count = 0
     for friend_request in friend_requests:
-        friend_request.accept()
-    data = {
-         'status': 'success', 'message': 'accepted successfully'
-    }
+        if friend_request.from_user_id==int(request.POST['id']):
+            friend_request.accept()
+            count = count + 1
+    if count == 0:
+        data = {
+             'status': 'Failed', 'message': 'Error' , 'count' : str(count)
+        }
+    else:
+        data = {
+            'status': 'success', 'message': 'accepted successfully', 'count': str(count)
+        }
     return Response(data)
 
 
@@ -90,15 +123,30 @@ def friends(request):
     user_location = GEOSGeometry(request.user.location)
     for friend in friends:
         friend_location = GEOSGeometry(friend.location)
-        temp_data = {
-            'id' : friend.id ,
-            'username' : friend.username ,
-            'profile_pic' : friend.profile_picture.url ,
-            'latitude' : friend.location.x,
-            'longitude' : friend.location.y,
-            'distance' :  user_location.distance(friend_location) * 100
-        }
-        temp.append(temp_data)
+        if not friend.profile_picture:
+            temp_data = {
+                'id' : friend.id ,
+                'username' : friend.username ,
+                'first_name' : friend.first_name ,
+                'last_name' : friend.last_name ,
+                'profile_pic': None,
+                'latitude' : friend.location.x,
+                'longitude' : friend.location.y,
+                'distance' :  user_location.distance(friend_location) * 100
+            }
+            temp.append(temp_data)
+        else:
+            temp_data = {
+                'id': friend.id,
+                'username': friend.username,
+                'profile_pic': friend.profile_picture.url,
+                'first_name': friend.first_name,
+                'last_name': friend.last_name,
+                'latitude': friend.location.x,
+                'longitude': friend.location.y,
+                'distance': user_location.distance(friend_location) * 100
+            }
+            temp.append(temp_data)
     data = {
         'friends' : temp
     }
@@ -118,3 +166,5 @@ def remove_friend(request):
             return Response(content)
         except AlreadyExistsError:
             return Response(str({'status': 'failed', 'message': 'Already Friends'}))
+
+
