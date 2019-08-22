@@ -64,7 +64,7 @@ def near_by_posts(request):
                         'profile_pic': None if not posted_user.profile_picture else posted_user.profile_picture.url,
                         'datetime': post.datetime,
                         'body': post.body,
-                        'video':None if not post.video else post.video.url,
+                        'video':None if not post.video else post.video.url,,
                         'distance': user_location.distance(post_location) * 100000
                     }
                     temp_posts.append(temp_post)
@@ -98,7 +98,7 @@ def near_by_posts(request):
                     'datetime': post.datetime,
                     'body': post.body,
                     'image': None if not post.image else post.image.url,
-                    'video': None if not post.video else post.video.url,
+                    'video': None if not post.video else post.video.url,,
                     'distance': user_location.distance(post_location) * 100000
                 }
                 temp_posts.append(temp_post)
