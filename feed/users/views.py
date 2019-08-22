@@ -6,10 +6,9 @@ from .serializers import CreateUserSerializer, UserSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from friendship.models import Friend,FriendshipRequest
+from friendship.models import Friend, FriendshipRequest
 from friendship.exceptions import AlreadyExistsError
 from django.contrib.gis.geos import GEOSGeometry
-
 
 
 class UserViewSet(mixins.RetrieveModelMixin,
@@ -41,7 +40,7 @@ class UserSearch(generics.ListAPIView):
     search_fields = ['username', 'email']
 
     def list(self, request):
-        queryset = self.get_queryset()
+        queryset = self.filter_queryset(self.get_queryset()).filter()
         serializer = UserSerializer(queryset, many=True)
         response_list = serializer.data
         for x in response_list:
@@ -71,13 +70,13 @@ def friend_requests(request):
     for friend_request in friend_requests:
         if not friend_request.from_user.profile_picture:
             temp_data = {
-                'profile_pic' : None,
-                'from_user' : friend_request.from_user.username,
-                'from_user_firstname' : friend_request.from_user.first_name,
-                'from_user_lastname' : friend_request.from_user.last_name,
-                'from_user' : friend_request.from_user.first_name,
-                'from_user_id' : friend_request.from_user_id,
-                'message' : friend_request.message,
+                'profile_pic': None,
+                'from_user': friend_request.from_user.username,
+                'from_user_firstname': friend_request.from_user.first_name,
+                'from_user_lastname': friend_request.from_user.last_name,
+                'from_user': friend_request.from_user.first_name,
+                'from_user_id': friend_request.from_user_id,
+                'message': friend_request.message,
             }
             temp.append(temp_data)
         else:
@@ -92,7 +91,7 @@ def friend_requests(request):
             }
             temp.append(temp_data)
     data = {
-        'friend_requests' : temp
+        'friend_requests': temp
     }
     return Response(data)
 
@@ -102,12 +101,12 @@ def accept_friend(request):
     friend_requests = FriendshipRequest.objects.filter(to_user=request.user.id)
     count = 0
     for friend_request in friend_requests:
-        if friend_request.from_user_id==int(request.POST['id']):
+        if friend_request.from_user_id == int(request.POST['id']):
             friend_request.accept()
             count = count + 1
     if count == 0:
         data = {
-             'status': 'Failed', 'message': 'Error' , 'count' : str(count)
+            'status': 'Failed', 'message': 'Error', 'count': str(count)
         }
     else:
         data = {
@@ -125,14 +124,14 @@ def friends(request):
         friend_location = GEOSGeometry(friend.location)
         if not friend.profile_picture:
             temp_data = {
-                'id' : friend.id ,
-                'username' : friend.username ,
-                'first_name' : friend.first_name ,
-                'last_name' : friend.last_name ,
+                'id': friend.id,
+                'username': friend.username,
+                'first_name': friend.first_name,
+                'last_name': friend.last_name,
                 'profile_pic': None,
-                'latitude' : friend.location.x,
-                'longitude' : friend.location.y,
-                'distance' :  user_location.distance(friend_location) * 100
+                'latitude': friend.location.x,
+                'longitude': friend.location.y,
+                'distance': user_location.distance(friend_location) * 100
             }
             temp.append(temp_data)
         else:
@@ -148,7 +147,7 @@ def friends(request):
             }
             temp.append(temp_data)
     data = {
-        'friends' : temp
+        'friends': temp
     }
     return Response(data)
 
@@ -166,5 +165,3 @@ def remove_friend(request):
             return Response(content)
         except AlreadyExistsError:
             return Response(str({'status': 'failed', 'message': 'Already Friends'}))
-
-
