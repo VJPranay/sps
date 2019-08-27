@@ -8,6 +8,7 @@ from friendship.models import Friend, FriendshipRequest
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.measure import D
+from fcm_django.models import FCMDevice
 
 
 @api_view(['GET', 'POST'])
@@ -32,6 +33,10 @@ def post_activity(request):
                 location=location
             )
             new_activity.save()
+            friends = Friend.objects.friends(request.user)
+            for friend in friends:
+                devices = FCMDevice.objects.filter(user_id=friend)
+                devices.send_message(title="New post from "+ request.user.username, body=body[0:30])
             return Response("Posted")
 
 

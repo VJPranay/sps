@@ -28,6 +28,7 @@ class Common(Configuration):
         'feed.users',
         'feed.newsfeed',
         'friendship',
+        "fcm_django",
 
 
 
@@ -92,6 +93,19 @@ class Common(Configuration):
     # Media files
     MEDIA_ROOT = join(os.path.dirname(BASE_DIR), 'media')
     MEDIA_URL = '/media/'
+
+    FCM_DJANGO_SETTINGS = {
+        "APP_VERBOSE_NAME": "sps-app-d3843",
+        # default: _('FCM Django')
+        "FCM_SERVER_KEY": "AAAAFoAE1BA:APA91bENnXrNcXUi8ylzr7vxomBxx-I5Ch437Q4LGfIesqU83mY0SC0Bmx-dIlxDv2asLYdsPGSALYCE0IBflJXlC5qOc4o8aJFqyxKhCDJGFIUre1rNrx-4862cLVn7HK1dCIVnHGE6",
+        # true if you want to have only one active device per registered user at a time
+        # default: False
+        "ONE_DEVICE_PER_USER": False,
+        # devices to which notifications cannot be sent,
+        # are deleted upon receiving error response from FCM
+        # default: False
+        "DELETE_INACTIVE_DEVICES": True,
+    }
 
     TEMPLATES = [
         {

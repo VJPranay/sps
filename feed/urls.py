@@ -8,10 +8,15 @@ from rest_framework.authtoken import views
 from .users.views import UserViewSet, UserCreateViewSet, UserSearch, \
     send_friend_request, remove_friend, friend_requests, friends, accept_friend
 from .newsfeed.views import post_activity, posts, near_by_posts, post_like, post_comment, get_comments
+from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
+
+from rest_framework.routers import DefaultRouter
+
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'users', UserCreateViewSet)
+router.register(r'devices', FCMDeviceAuthorizedViewSet)
 
 urlpatterns = [
                   path('admin/', admin.site.urls),

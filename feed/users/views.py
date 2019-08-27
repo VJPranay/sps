@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from friendship.models import Friend, FriendshipRequest
 from friendship.exceptions import AlreadyExistsError
 from django.contrib.gis.geos import GEOSGeometry
+from fcm_django.models import FCMDevice
 
 
 class UserViewSet(mixins.RetrieveModelMixin,
@@ -57,6 +58,8 @@ def send_friend_request(request):
             return Response(status=status.HTTP_404_NOT_FOUND)
         try:
             Friend.objects.add_friend(request.user, req_user_info, message=request.POST['message'])
+            devices = FCMDevice.objects.filter(user_id=req_user_info.id)
+            devices.send_message(title="Friend Request", body="New Friend Request from " + request.user.username, data={"from_user_id": request.user.id,'page':'friend_requests'})
             content = {'message': 'Request sent successfully'}
             return Response(content)
         except AlreadyExistsError:
@@ -103,6 +106,9 @@ def accept_friend(request):
     for friend_request in friend_requests:
         if friend_request.from_user_id == int(request.POST['id']):
             friend_request.accept()
+            devices = FCMDevice.objects.filter(user_id=friend_request.from_user_id)
+            devices.send_message(title="Friend Request Accepted", body="Friend Request accepted",
+                                 data={"from_user_id": friend_request.from_user_id,'page':'home'})
             count = count + 1
     if count == 0:
         data = {
