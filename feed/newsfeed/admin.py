@@ -1,9 +1,12 @@
 from django.contrib.gis.admin import OSMGeoAdmin
-from .models import Activity
+from .models import Activity,Like,Comment
 from django.contrib import admin
 from feed.users.models import User
 # Register your models here.
 
+
+admin.site.register(Like)
+admin.site.register(Comment)
 
 @admin.register(User)
 class UserAdmin(OSMGeoAdmin):

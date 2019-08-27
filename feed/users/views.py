@@ -165,3 +165,6 @@ def remove_friend(request):
             return Response(content)
         except AlreadyExistsError:
             return Response(str({'status': 'failed', 'message': 'Already Friends'}))
+
+
+
