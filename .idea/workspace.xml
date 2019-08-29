@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d45c9e07-4ff6-4336-9f20-df9cb6e4bb27" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/feed/newsfeed/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/feed/newsfeed/views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -49,6 +48,14 @@
       <option name="presentableId" value="Default" />
       <updated>1562851199927</updated>
     </task>
+    <task id="LOCAL-00001" summary="comments profilepic null fix &amp; comments length added in posts &amp; comments reversed">
+      <created>1567055218015</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1567055218015</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TodoView">
@@ -72,5 +79,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="comments profilepic null fix &amp; comments length added in posts &amp; comments reversed" />
+    <option name="LAST_COMMIT_MESSAGE" value="comments profilepic null fix &amp; comments length added in posts &amp; comments reversed" />
   </component>
 </project>

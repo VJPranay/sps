@@ -272,7 +272,7 @@ def get_comments(request):
             commented_user_details = User.objects.get(id=comment.user_id)
             if not commented_user_details.profile_picture:
                 temp_comment = {
-                    'user': None,
+                    'user': commented_user_details.username,
                     'profile_pic': None if not commented_user_details.profile_picture else commented_user_details.profile_picture.url,
                     'comment': comment.body
                 }
