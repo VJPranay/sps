@@ -59,6 +59,7 @@ def near_by_posts(request):
                 'comment': comment.body
             }
             post_comments.append(temp_comment)
+        post_comments.reverse()
         temp_user_like = Like.objects.filter(post_id=post.id, user_id=request.user.id)
         post_location = GEOSGeometry(post.location)
 
@@ -76,6 +77,7 @@ def near_by_posts(request):
                     'likes': len(likes),
                     'user_liked': False if len(temp_user_like) == 0 else True,
                     'comments': post_comments[0:2],
+                    'comments_length': len(post_comments),
                 }
                 temp_posts.append(temp_post)
             elif post.video:
@@ -92,6 +94,7 @@ def near_by_posts(request):
                     'likes': len(likes),
                     'user_liked': False if len(temp_user_like) == 0 else True,
                     'comments': post_comments[0:2],
+                    'comments_length': len(post_comments),
                 }
                 temp_posts.append(temp_post)
             # else:
@@ -117,6 +120,7 @@ def near_by_posts(request):
                 'likes': len(likes),
                 'user_liked': False if len(temp_user_like) == 0 else True,
                 'comments': post_comments[0:2],
+                'comments_length': len(post_comments),
             }
             temp_posts.append(temp_post)
         else:
@@ -134,6 +138,7 @@ def near_by_posts(request):
                 'likes': len(likes),
                 'user_liked': False if len(temp_user_like) == 0 else True,
                 'comments': post_comments[0:2],
+                'comments_length': len(post_comments),
             }
             temp_posts.append(temp_post)
     return Response(temp_posts)
@@ -161,6 +166,8 @@ def posts(request):
                     'comment': comment.body
                 }
                 post_comments.append(temp_comment)
+
+            post_comments.reverse()
             if not activity.image:
                 if not activity.video:
                     temp_post = {
@@ -174,6 +181,7 @@ def posts(request):
                         'likes': len(likes),
                         'user_liked': False if len(temp_user_like) == 0 else True,
                         'comments': post_comments[0:2],
+                        'comments_length': len(post_comments),
                     }
                     friend_posts.append(temp_post)
                 elif activity.video:
@@ -189,6 +197,7 @@ def posts(request):
                         'likes': len(likes),
                         'user_liked': False if len(temp_user_like) == 0 else True,
                         'comments': post_comments[0:2],
+                        'comments_length': len(post_comments),
                     }
                     friend_posts.append(temp_post)
             elif activity.image:
@@ -204,6 +213,7 @@ def posts(request):
                     'likes': len(likes),
                     'user_liked': False if len(temp_user_like) == 0 else True,
                     'comments': post_comments[0:2],
+                    'comments_length': len(post_comments),
                 }
                 friend_posts.append(temp_post)
             else:
@@ -220,6 +230,7 @@ def posts(request):
                     'likes': len(likes),
                     'user_liked': False if len(temp_user_like) == 0 else True,
                     'comments': post_comments[0:2],
+                    'comments_length': len(post_comments),
                 }
                 friend_posts.append(temp_post)
     return Response(friend_posts)
@@ -262,15 +273,16 @@ def get_comments(request):
             if not commented_user_details.profile_picture:
                 temp_comment = {
                     'user': None,
-                    'profile_pic': commented_user_details.profile_picture.url,
+                    'profile_pic': None if not commented_user_details.profile_picture else commented_user_details.profile_picture.url,
                     'comment': comment.body
                 }
                 final_comments.append(temp_comment)
             else:
                 temp_comment = {
                     'user': commented_user_details.username,
-                    'profile_pic': commented_user_details.profile_picture.url,
+                    'profile_pic': None if not commented_user_details.profile_picture else commented_user_details.profile_picture.url,
                     'comment': comment.body
                 }
                 final_comments.append(temp_comment)
+        final_comments.reverse()
         return Response(final_comments)
